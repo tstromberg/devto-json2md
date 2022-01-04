@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 	"time"
 
@@ -26,9 +27,9 @@ type Article struct {
 }
 
 // outputTemplate is based on Hugo's frontmatter spec: https://gohugo.io/content-management/front-matter/
-var outputTemplate = `title: {{ .Title }}
+var outputTemplate = `title: {{ .Title|escape }}
 date: {{ .CreatedAt.Format "2006-01-02" }}
-description: {{ .Description }}
+description: {{ .Description|escape }}
 slug: {{ .Slug }}
 {{- if not .Published }}
 draft: true
@@ -40,10 +41,19 @@ main_image: {{.}}
 {{ .BodyMarkdown }}
 `
 
+// escapeYAML is a low-tech way of escaping YAML strings
+func escapeYAML(s string) string {
+	s = strings.ReplaceAll(s, `"`, `\"`)
+	return `"` + s + `"`
+}
+
 func main() {
 	klog.InitFlags(nil)
 
-	t, err := template.New("articles").Parse(outputTemplate)
+	fm := template.FuncMap{
+		"escape": escapeYAML,
+	}
+	t, err := template.New("articles").Funcs(fm).Parse(outputTemplate)
 	if err != nil {
 		klog.Exitf("template failed to parse: %v", err)
 	}
