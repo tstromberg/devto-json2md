@@ -1,6 +1,6 @@
-# devto-json2md
+# devto-markdown
 
-Convert dev.to blog JSON export into Markdown files
+Your escape hatch from https://dev.to/ - this tool converts the dev.to JSON export into Markdown files suitable for usage by other static content management systems.
 
 ## Features
 
