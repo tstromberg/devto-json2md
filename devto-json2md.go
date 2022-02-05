@@ -27,9 +27,10 @@ type Article struct {
 }
 
 // outputTemplate is based on Hugo's frontmatter spec: https://gohugo.io/content-management/front-matter/
-var outputTemplate = `title: {{ .Title|escape }}
+var outputTemplate = `---
+title: {{ .Title|escape }}
 date: {{ .CreatedAt.Format "2006-01-02" }}
-description: {{ .Description|escape }}
+description: {""{ .Description|escape }}
 slug: {{ .Slug }}
 {{- if not .Published }}
 draft: true
